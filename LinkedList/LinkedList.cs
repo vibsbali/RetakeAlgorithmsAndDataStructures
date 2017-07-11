@@ -37,7 +37,12 @@ namespace LinkedList
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new System.NotImplementedException();
+            var current = Head;
+            while (current != null)
+            {
+                array[arrayIndex++] = current.Value;
+                current = current.Next;
+            }
         }
 
         public bool Remove(T item)
