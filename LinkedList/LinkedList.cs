@@ -21,7 +21,18 @@ namespace LinkedList
 
         public bool Contains(T item)
         {
-            throw new System.NotImplementedException();
+            var current = Head;
+            while (current != null)
+            {
+                if (current.Value.Equals(item))
+                {
+                    return true;
+                }
+
+                current = current.Next;
+            }
+
+            return false;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -31,9 +42,44 @@ namespace LinkedList
 
         public bool Remove(T item)
         {
-            throw new System.NotImplementedException();
+            if (Count != 0)
+            {
+                if (Head.Value.Equals(item))
+                {
+                    RemoveFirst();
+                    return true;
+                }
+                if (Tail.Value.Equals(item))
+                {
+                    RemoveLast();
+                    return true;
+                }
+
+                //Else
+                var current = Head;
+                if (current.Next.Value.Equals(item))
+                {
+                    var temp = current.Next.Next;
+
+                    //next two steps are for housekeeping and for GC 
+                    //set the next's next pointer to null
+                    current.Next.Next = null;
+                    //set the current's next point to null - the following is not that important 
+                    current.Next = null;
+
+                    current.Next = temp;
+                    Count--;
+                    return true;
+                }
+            }
+
+
+            return false;
         }
 
+        /// <summary>
+        /// A completely new way to remove items from a linked list
+        /// </summary>
         public void RemoveFirst()
         {
             if (Head == Tail)

@@ -6,20 +6,21 @@ namespace LinkedList
     {
         static void Main()
         {
-            var linkedList = new LinkedList<int>
+            //Easy way to add items to a linked list
+            var linkedList = new LinkedList<string>
             {
-              1,
-              2,
-              3
+              "One",
+              "Two",
+              "Three",
+              "Four"
             };
-
-            linkedList.RemoveLast();
-
 
             foreach (var value in linkedList)
             {
                 Console.WriteLine(value);
             }
+
+            Console.WriteLine($"Total count = {linkedList.Count}");
         }
     }
 }
