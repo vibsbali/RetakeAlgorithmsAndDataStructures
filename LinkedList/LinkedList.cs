@@ -77,8 +77,7 @@ namespace LinkedList
                     return true;
                 }
             }
-
-
+            
             return false;
         }
 
