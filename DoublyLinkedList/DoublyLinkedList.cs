@@ -90,12 +90,86 @@ namespace DoublyLinkedList
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            var current = Head;
+            while (current != null)
+            {
+                array[arrayIndex++] = current.Value;
+                current = current.Next;
+            }
         }
 
         public bool Remove(T item)
         {
-            throw new NotImplementedException();
+            if (Count != 0)
+            {
+                if (Head.Value.Equals(item))
+                {
+                    RemoveFirst();
+                    return true;
+                }
+
+                if (Tail.Value.Equals(item))
+                {
+                    RemoveLast();
+                    return true;
+                }
+
+                //Since head cannot be the value
+                var current = Head.Next;
+                while (current != null)
+                {
+                    if (current.Value.Equals(item))
+                    {
+                        current.Previous.Next = current.Next;
+                        current.Next.Previous = current.Previous;
+                        current = null; //Not important in managed language
+
+                        Count--;
+                        return true;
+                    }
+                    current = current.Next;
+                }
+            }
+
+            return false;
+        }
+
+        public void RemoveLast()
+        {
+            if (Count != 0)
+            {
+                if (Tail == Head)
+                {
+                    Clear();
+                    return;
+                }
+
+                var newTail = Tail.Previous;
+                Tail = null;    //Important if Node stores ref type
+                Tail = newTail;
+                Tail.Next = null;
+                Count--;
+            }
+        }
+
+        public void RemoveFirst()
+        {
+            if (Count != 0)
+            {
+                //i.e. only one item in the linked list
+                if (Head == Tail)
+                {
+                    Clear();
+                    return;
+                }
+
+                var newHead = Head.Next;
+                Head = null;
+                Head = newHead;
+                Head.Previous = null;
+
+                Count--;
+            }
         }
 
         public int Count { get; private set; }
