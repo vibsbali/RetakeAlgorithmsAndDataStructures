@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackUsingLinkedList", "Sta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackUsingArrays", "StackUsingArrays\StackUsingArrays.csproj", "{48E334D0-4C43-4DF2-96F1-98B3502AC790}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueUsingLinkedList", "QueueUsingLinkedList\QueueUsingLinkedList.csproj", "{C1FF175F-4597-4AA2-9F26-B5760EA1F470}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{48E334D0-4C43-4DF2-96F1-98B3502AC790}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48E334D0-4C43-4DF2-96F1-98B3502AC790}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48E334D0-4C43-4DF2-96F1-98B3502AC790}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1FF175F-4597-4AA2-9F26-B5760EA1F470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1FF175F-4597-4AA2-9F26-B5760EA1F470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1FF175F-4597-4AA2-9F26-B5760EA1F470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1FF175F-4597-4AA2-9F26-B5760EA1F470}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
