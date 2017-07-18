@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueUsingLinkedList", "Que
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueUsingArrays", "QueueUsingArrays\QueueUsingArrays.csproj", "{5A5B84F2-C91E-446A-A916-31CB5D72BD71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trees", "Trees\Trees.csproj", "{BFA6CCE0-A40C-43F6-AC5A-70C197A7CC53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{5A5B84F2-C91E-446A-A916-31CB5D72BD71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A5B84F2-C91E-446A-A916-31CB5D72BD71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A5B84F2-C91E-446A-A916-31CB5D72BD71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFA6CCE0-A40C-43F6-AC5A-70C197A7CC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFA6CCE0-A40C-43F6-AC5A-70C197A7CC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFA6CCE0-A40C-43F6-AC5A-70C197A7CC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFA6CCE0-A40C-43F6-AC5A-70C197A7CC53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
