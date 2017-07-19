@@ -49,7 +49,7 @@ namespace Trees
                         //update parent node
                         Parent = parent
                     };
-                    
+
                     return;
                 }
 
@@ -64,7 +64,7 @@ namespace Trees
                         //update parent node
                         Parent = parent
                     };
-                    
+
                     return;
                 }
 
@@ -75,14 +75,68 @@ namespace Trees
 
         public void Remove(T item)
         {
-            if (head.Value.CompareTo(item) == 0)
+            var nodeToRemove = FindNode(item);
+
+            if (nodeToRemove == null)
             {
-                //Remove head
                 return;
             }
 
-            var parentOfNodeToRemove = FindNode(item);
-            
+            //1. Does the node to remove have any right children
+            if (nodeToRemove.Right == null)
+            {
+                if (IsNodeOnRightOfParent(nodeToRemove))
+                {
+                    nodeToRemove.Parent.Right = null;
+                    nodeToRemove.Parent.Right = nodeToRemove.Left;
+
+                    //Update parent
+                    if (nodeToRemove.Left != null)
+                    {
+                        nodeToRemove.Left.Parent = nodeToRemove.Parent;
+                    }
+
+                    Count--;
+                }
+                else
+                {
+                    nodeToRemove.Parent.Left = null;
+                    nodeToRemove.Parent.Left = nodeToRemove.Left;
+
+                    //Update Parent
+                    if (nodeToRemove.Left != null)
+                    {
+                        nodeToRemove.Left.Parent = nodeToRemove.Parent;
+                    }
+
+                    Count--;
+                }
+                return;
+            }
+
+            //2. Does the node to remove has a right child which in-turn doesn't have any left child
+            if (nodeToRemove.Right != null)
+            {
+                if (IsNodeOnRightOfParent(nodeToRemove))
+                {
+                    nodeToRemove.Parent.Right = null;
+                    nodeToRemove.Parent.Right = nodeToRemove.Right; //Promote right child
+                    nodeToRemove.Right.Left = nodeToRemove.Left;
+                    nodeToRemove.Right.Parent = nodeToRemove.Parent;
+
+                    Count--;
+                }
+                else
+                {
+                    nodeToRemove.Parent.Left = null;
+                    nodeToRemove.Parent.Left = nodeToRemove.Right; //Promote right child
+                    nodeToRemove.Right.Left = nodeToRemove.Left;
+                    nodeToRemove.Right.Parent = nodeToRemove.Parent;
+
+                    Count--;
+                }
+                return;
+            }
         }
 
         private TreeNode<T> FindNode(T item)
@@ -108,14 +162,15 @@ namespace Trees
             return null;
         }
 
-        private static bool IsValueEqualsRightNode(TreeNode<T> binaryTreeNode, T item)
+        private static bool IsNodeOnRightOfParent(TreeNode<T> binaryTreeNode)
         {
-            return binaryTreeNode.Right != null && item.CompareTo(binaryTreeNode.Right.Value) == 0;
-        }
+            //Check if the node has parent and parent's value is greater than current node
+            if (binaryTreeNode.Parent != null && binaryTreeNode.Parent.Value.CompareTo(binaryTreeNode.Value) <= 0)
+            {
+                return true;
+            }
 
-        private static bool IsValueEqualsLeftNode(TreeNode<T> binaryTreeNode, T item)
-        {
-            return binaryTreeNode.Left != null && item.CompareTo(binaryTreeNode.Left.Value) == 0;
+            return false;
         }
 
         public bool Contains(T item)
