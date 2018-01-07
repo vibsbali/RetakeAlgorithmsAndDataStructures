@@ -7,28 +7,38 @@ namespace Trees
     public class Tree<T> : IEnumerable<T>
         where T : IComparable<T>
     {
-        class TreeNode<T>
+        class BinaryTreeNode<T> : IComparable<T>
+            where T : IComparable<T>
         {
-            public TreeNode<T> Parent { get; set; }
-            public TreeNode<T> Left { get; set; }
-            public TreeNode<T> Right { get; set; }
+            public BinaryTreeNode<T> Left { get; set; }
+            public BinaryTreeNode<T> Right { get; set; }
 
             public T Value { get; }
 
-            public TreeNode(T value)
+            public BinaryTreeNode(T value)
             {
                 Value = value;
+            }
+
+            public int CompareTo(T other)
+            {
+                return Value.CompareTo(other);
+            }
+
+            public override string ToString()
+            {
+                return Value.ToString();
             }
         }
 
         public int Count { get; private set; }
-        private TreeNode<T> head;
+        private BinaryTreeNode<T> head;
 
         public void Add(T item)
         {
             if (head == null)
             {
-                head = new TreeNode<T>(item);
+                head = new BinaryTreeNode<T>(item);
             }
             else
             {
@@ -38,69 +48,142 @@ namespace Trees
             Count++;
         }
 
-        private void AddRecursively(TreeNode<T> parent, T item)
+        private void AddRecursively(BinaryTreeNode<T> curentNode, T item)
         {
-            if (item.CompareTo(parent.Value) < 0)
+            if (item.CompareTo(curentNode.Value) < 0)
             {
-                if (parent.Left == null)
+                if (curentNode.Left == null)
                 {
-                    parent.Left = new TreeNode<T>(item)
-                    {
-                        //update parent node
-                        Parent = parent
-                    };
-                    
+                    curentNode.Left = new BinaryTreeNode<T>(item);
                     return;
                 }
 
-                AddRecursively(parent.Left, item);
+                AddRecursively(curentNode.Left, item);
             }
             else
             {
-                if (parent.Right == null)
+                if (curentNode.Right == null)
                 {
-                    parent.Right = new TreeNode<T>(item)
-                    {
-                        //update parent node
-                        Parent = parent
-                    };
-                    
+                    curentNode.Right = new BinaryTreeNode<T>(item);
                     return;
                 }
-
-
-                AddRecursively(parent.Right, item);
+                AddRecursively(curentNode.Right, item);
             }
         }
 
-        public void Remove(T item)
+        public void Remove(T value)
         {
-            if (head.Value.CompareTo(item) == 0)
+            if (head.Value.CompareTo(value) == 0)
             {
                 //Remove head
-                return;
+                throw new NotImplementedException("Removing root not implemented");
             }
-
-            var parentOfNodeToRemove = FindNode(item);
-            
+            else
+            {
+                var nodeToRemove = FindNode(value, out BinaryTreeNode<T> parent);
+                if (nodeToRemove != null)
+                {
+                    //4 options
+                    //1. Leaf node - easy remove the node and update reference
+                    //2. No right node just replace the removed node with left node
+                    //3. Right node doesn't have a left child, replace with right node
+                    //4. Right node has a left child, go all the way down to the leftmost child and replace the removed
+                    //   node with left most node
+                    RemoveNode(ref nodeToRemove, parent);
+                }
+            }
+            //--Count;
         }
 
-        private TreeNode<T> FindNode(T item)
+        private void RemoveNode(ref BinaryTreeNode<T> nodeToRemove, BinaryTreeNode<T> parent)
+        {
+            var isRightOfParent = IsRightOfParentNode(parent, nodeToRemove.Value);
+            //1. Leaf node - easy remove the node and update reference
+            if (nodeToRemove.Left == null && nodeToRemove.Right == null)
+            {
+                if (isRightOfParent)
+                {
+                    parent.Right = null;
+                }
+                else
+                {
+                    parent.Left = null;
+                }
+            }
+
+            //2. No right node just replace the removed node with left node
+            else if (nodeToRemove.Left != null && nodeToRemove.Right == null)
+            {
+                if (isRightOfParent)
+                {
+                    parent.Right = nodeToRemove.Left;
+                }
+                else
+                {
+                    parent.Left = nodeToRemove.Left;
+                }
+            }
+
+            //3. Right node doesn't have a left child, replace with right node
+            else if (nodeToRemove.Right != null && nodeToRemove.Right.Left == null)
+            {
+                if (isRightOfParent)
+                {
+                    parent.Right = nodeToRemove.Right;
+                    nodeToRemove.Right.Left = nodeToRemove.Left;
+                }
+                else
+                {
+                    parent.Left = nodeToRemove.Right;
+                    nodeToRemove.Right.Left = nodeToRemove.Left;
+                }
+            }
+
+            //4. Right node has a left child, replace with right most node
+            else if (nodeToRemove.Right != null && nodeToRemove.Right.Left != null)
+            {
+                var parentOfLeftNode = nodeToRemove.Right;
+                var leftNode = nodeToRemove.Right.Left;
+                while (leftNode.Left != null)
+                {
+                    parentOfLeftNode = leftNode;
+                    leftNode = leftNode.Left;
+                }
+
+                if (isRightOfParent)
+                {
+                    parent.Right = leftNode;
+                }
+                else
+                {
+                    parent.Left = leftNode;
+                }
+                parentOfLeftNode.Left = null;
+                leftNode.Left = nodeToRemove.Left;
+                leftNode.Right = nodeToRemove.Right;
+            }
+            --Count;
+        }
+        
+        private BinaryTreeNode<T> FindNode(T item, out BinaryTreeNode<T> parent)
         {
             var current = head;
+            parent = null;
             while (current != null)
             {
-                if (current.Value.CompareTo(item) == 0)
+                if (current.CompareTo(item) == 0)
                 {
                     return current;
                 }
 
                 if (current.Value.CompareTo(item) < 0)
                 {
+                    parent = current;
                     current = current.Right;
                 }
                 else
                 {
+                    parent = current;
                     current = current.Left;
                 }
             }
@@ -108,19 +191,19 @@ namespace Trees
             return null;
         }
 
-        private static bool IsValueEqualsRightNode(TreeNode<T> binaryTreeNode, T item)
+        private static bool IsRightOfParentNode(BinaryTreeNode<T> parentNode, T item)
         {
-            return binaryTreeNode.Right != null && item.CompareTo(binaryTreeNode.Right.Value) == 0;
+            return parentNode.Right != null && item.CompareTo(parentNode.Right.Value) == 0;
         }
 
-        private static bool IsValueEqualsLeftNode(TreeNode<T> binaryTreeNode, T item)
+        private static bool IsLeftOfParentNode(BinaryTreeNode<T> parentNode, T item)
         {
-            return binaryTreeNode.Left != null && item.CompareTo(binaryTreeNode.Left.Value) == 0;
+            return parentNode.Left != null && item.CompareTo(parentNode.Left.Value) == 0;
         }
 
         public bool Contains(T item)
         {
-            return FindNode(item) != null;
+            return FindNode(item, out BinaryTreeNode<T> _) != null;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -131,6 +214,54 @@ namespace Trees
         public IEnumerator<T> GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+
+        public void PreOrderTraversal(Action<T> actionToPerform)
+        {
+            var root = head;
+            PerformPreOrderTraversal(root, actionToPerform);
+        }
+
+        private void PerformPreOrderTraversal(BinaryTreeNode<T> node, Action<T> actionToPerform)
+        {
+            if (node != null)
+            {
+                actionToPerform.Invoke(node.Value);
+                PerformPreOrderTraversal(node.Left, actionToPerform);
+                PerformPreOrderTraversal(node.Right, actionToPerform);
+            }
+        }
+
+        public void PostOrderTraversal(Action<T> actionToPerform)
+        {
+            var root = head;
+            PerformPostOrderTraversal(root, actionToPerform);
+        }
+
+        private void PerformPostOrderTraversal(BinaryTreeNode<T> node, Action<T> actionToPerform)
+        {
+            if (node != null)
+            {
+                PerformPreOrderTraversal(node.Left, actionToPerform);
+                PerformPreOrderTraversal(node.Right, actionToPerform);
+                actionToPerform.Invoke(node.Value);
+            }
+        }
+
+        public void InOrderTraversal(Action<T> actionToPerform)
+        {
+            var root = head;
+            PerformInOrderTraversal(root, actionToPerform);
+        }
+
+        private void PerformInOrderTraversal(BinaryTreeNode<T> node, Action<T> actionToPerform)
+        {
+            if (node != null)
+            {
+                PerformInOrderTraversal(node.Left, actionToPerform);
+                actionToPerform.Invoke(node.Value);
+                PerformInOrderTraversal(node.Right, actionToPerform);
+            }
         }
     }
 }
